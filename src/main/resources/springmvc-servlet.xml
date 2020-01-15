@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p" 
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		    http://www.springframework.org/schema/context    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		    http://www.springframework.org/schema/tx    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		    http://www.springframework.org/schema/aop    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		    http://www.springframework.org/schema/mvc    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		    http://www.springframework.org/schema/util   http://www.springframework.org/schema/util/spring-util.xsd">
+
+<!-- ########    这里与applicationContext.xml分工，是做拦截器、前端控制器与转发view，扫描controller  ######## -->
+
+	<!-- 启用注解驱动 -->
+	<mvc:annotation-driven>
+		<mvc:async-support default-timeout="10000"/>
+		<mvc:message-converters register-defaults="true">
+			<ref bean="mappingJackson2HttpMessageConverter"/>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!-- 扫描注解 -->
+	<!-- use-default-filters用来指示是否自动扫描带有@Component、@Repository、@Service和@Controller的类。默认为true，即默认扫描
+			<context:include-filter/>子标签是用来添加扫描注解      <context:exclude-filter/>子标签是用来排除扫描注解 -->
+	<context:component-scan base-package="com.tianlin.web" use-default-filters="false" >
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+	<!-- 重新定义资源文件的位置 -->
+	<mvc:default-servlet-handler/>
+
+
+	<!-- 引用外部配置文件 -->
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<!-- <value>classpath:version.properties</value> -->
+			</list>
+		</property>
+	</bean>
+
+	<!--避免IE执行AJAX时，返回JSON出现下载文件 -->
+	<bean id="mappingJackson2HttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/html;charset=UTF-8</value>
+				<value>text/json;charset=UTF-8</value>
+				<value>application/json;charset=UTF-8</value>
+			</list>
+		</property>
+		<property name="objectMapper">
+			<bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+				<property name="featuresToEnable">
+					<array>
+						<util:constant static-field="com.fasterxml.jackson.core.JsonGenerator.Feature.WRITE_NUMBERS_AS_STRINGS"/>
+					</array>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- 采用SpringMVC自带的JSON转换工具，支持@ResponseBody注解 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJackson2HttpMessageConverter" />    <!-- JSON转换器 -->
+			</list>
+		</property>
+	</bean>
+	
+	<!-- ********************************配置视图解析器************************************ -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/page/"
+		p:suffix=".jsp" />
+	
+</beans>

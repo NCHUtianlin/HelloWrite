@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianlin.dao.interfaces.ContentMapper" >
+  <resultMap id="BaseResultMap" type="com.tianlin.entity.Content" >
+    <id column="Id" property="id" jdbcType="BIGINT" />
+    <result column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="wdate" property="wdate" jdbcType="TIMESTAMP" />
+    <result column="detail" property="detail" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, userId, wdate, detail, title, state
+  </sql>
+  
+  <!-- 多条件查询 -->
+  <select id="queryMore" resultMap="BaseResultMap" parameterType="com.tianlin.entity.Content" >
+    select 
+    <include refid="Base_Column_List" />
+    from content
+    where 1=1
+      <if test="userid != null" >
+       and userId = #{userid,jdbcType=INTEGER}
+      </if>
+      <if test="wdate != null" >
+       and wdate = #{wdate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="detail != null" >
+       and detail = #{detail,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null" >
+       and title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="state != null" >
+       and state = #{state,jdbcType=INTEGER}
+      </if>
+      order by Id ASC
+    limit #{pageNow,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from content
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from content
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.tianlin.entity.Content" >
+    insert into content (Id, userId, wdate, 
+      detail, title, state
+      )
+    values (#{id,jdbcType=BIGINT}, #{userid,jdbcType=INTEGER}, #{wdate,jdbcType=TIMESTAMP}, 
+      #{detail,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tianlin.entity.Content" >
+    insert into content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="wdate != null" >
+        wdate,
+      </if>
+      <if test="detail != null" >
+        detail,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="wdate != null" >
+        #{wdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detail != null" >
+        #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianlin.entity.Content" >
+    update content
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="wdate != null" >
+        wdate = #{wdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detail != null" >
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tianlin.entity.Content" >
+    update content
+    set userId = #{userid,jdbcType=INTEGER},
+      wdate = #{wdate,jdbcType=TIMESTAMP},
+      detail = #{detail,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

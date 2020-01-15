@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/util 
+    http://www.springframework.org/schema/util/spring-util-4.0.xsd
+    http://www.springframework.org/schema/cache
+    http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!-- DRUID是阿里巴巴开元平台上的一个数据库连接池的实现，结合了C3PO， DBCP， PROXOOL等DB池的优点同时还加入了日志监控 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+    		init-method="init" destroy-method="close" >
+	    <property name="username"><value>${username}</value></property>
+	    <property name="password"><value>${password}</value></property>
+	    <property name="driverClassName"><value>${driverClassName}</value></property>
+	    <property name="url"><value>${url}</value></property>
+	    <!-- 初始化连接大小 -->
+	    <property name="initialSize"><value>${initialSize}</value></property>
+	    <!-- 连接池最大使用连接数 -->
+	    <property name="maxActive"><value>${maxActive}</value></property>
+	    <!-- 连接池中连接的最小空闲数量 -->
+	    <property name="minIdle"><value>${minIdle}</value></property>
+	    <!-- 连接的最大等待时间 -->
+	    <property name="maxWait"><value>${maxWait}</value></property>
+	    <!-- 使用非公平锁增加开发效率 -->
+	    <property name="useUnfairLock"><value>${useUnfairLock}</value></property>
+	    <!-- 是否启用PSCache -->
+	    <property name="maxOpenPreparedStatements"><value>${maxOpenPreparedStatements}</value></property>
+	    <!-- 连接属性 -->
+	    <property name="connectionProperties"><value>${connectionProperties}</value></property>
+	    <!-- 配置扩展插件：监控、日志、防御SQL注入 -->
+	    <property name="filters"><value>${filters}</value></property>
+	    
+    </bean>
+    
+    <!-- Mybatis文件配置，扫描所有mapper文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+    	p:dataSource-ref="dataSource"
+    	p:configLocation="classpath:mybatis-config.xml"
+    	p:mapperLocations="classpath:com/tianlin/service/mapping/*.xml"  >
+    </bean>
+    
+    <!-- spring与mybatis整合配置，扫描所有dao -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+    	p:basePackage="com.tianlin.dao.*"
+    	p:sqlSessionFactoryBeanName="sqlSessionFactory"  />
+
+    
+    <!-- 配置事务管理器 -->
+    <bean id="transactionMannager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+    	<property name="dataSource" ref="dataSource" />
+    </bean>
+    <!-- 以注解的方式配置事务 -->
+    <tx:annotation-driven transaction-manager="transactionMannager"/>
+    
+    
+    
+</beans>    
+    

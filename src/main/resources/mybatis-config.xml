@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- mybatis默认会忽略为null的字段，设置为true，这样就能够得到该字段，但是依旧为null，这就要注意空指针的问题了 -->
+		<setting name="callSettersOnNulls" value="true"/>
+	</settings>
+	
+	<!-- 命名空间 -->
+	<typeAliases>
+		<typeAlias alias="content" type="com.tianlin.entity.Content" />
+		<typeAlias alias="user" type="com.tianlin.entity.User" />
+		
+		
+	</typeAliases>
+	
+</configuration>
