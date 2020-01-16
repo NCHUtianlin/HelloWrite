@@ -79,8 +79,19 @@ layui.use('form', function(){
 			url:"./user/register",
 			data:json,
 			success:function(data){
-				layer.msg("注册成功");
-				
+				//layer.msg("注册成功");
+				layer.open({
+			        type: 1
+			        ,offset: 'auto'
+			        ,id: 'layerDemoAuto' //防止重复弹出
+			        ,content: '<div style="padding: 20px 100px;"> 注册成功 </div>'
+			        ,btn: '立即登录'
+			        ,btnAlign: 'c' //按钮居中
+			        ,shade: 0.2 //不显示遮罩
+			        ,yes: function(){
+			           window.location.href = "./";
+			        }
+			      });
 			},
 			error:function(data){
 				layer.msg("注册失败"+data);

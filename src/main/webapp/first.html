@@ -4,21 +4,23 @@
 	<meta charset="UTF-8">
 	<title>欢快记事本</title>
 	<link rel="stylesheet" href="./css/login/login.css" />
+	<link rel="stylesheet" href="./plugins/layui2.5.5/css/layui.css" />
 </head>
 <body>
 <div id='fistDIV'>
-	<table class="account_table" >
+	<form class="layui-form" method="post">
+	<table class="account_table"  >
 		<tr>
 		<td class='logo_td'>欢快记事本</td>
 		</tr>
 		<tr>
-		<td><input id='account' name='account' type='text' class="input_set" placeholder='用户名或手机'/></td>
+		<td><input id='phone' name='phone' lay-verify="required|phone" type='text' class="input_set" placeholder='手机号码'/></td>
 		</tr>
 		<tr>
-		<td><input id='password' name='password' type='password' class="input_set" placeholder='密码'/></td>
+		<td><input id='pwd' name='pwd' lay-verify="required|pwd" type='password' class="input_set" placeholder='密码'/></td>
 		</tr>
 		<tr>
-		<td><button id='loginBtn' class='login_Btn' ><span class='login_font_gap'>登</span><span>录</span></button></td>
+		<td><button type="button" id='loginBtn' class='login_Btn' lay-submit="" lay-filter="loginForm"><span class='login_font_gap'>登</span><span>录</span></button></td>
 		</tr>
 		<tr>
 		<td><button id='forgetPwdBtn' class='forgetPwd_Btn' >忘记密码</button></td>
@@ -29,10 +31,11 @@
 		<button id='registerBtn' class='register_Btn' >立即注册</button></td>
 		</tr>
 	</table>
-	
+	</form>
 </div>
 </body>
 <script type="text/javascript" src="./js/jquery/jquery.min.js" charset="utf-8"></script>
+<script src="./plugins/layui2.5.5/layui.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/login/login.js"   charset="utf-8"></script>
 
 

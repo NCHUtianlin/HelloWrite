@@ -1,35 +1,59 @@
 
 var checkCode = "";
 
-$("#loginBtn").click(function(){
-	
-	var account = $("#account").val();
-	var password = $("#password").val();
-	var json = {
-			"phone":'15180249029',//account,
-			"pwd":'12'//password
-	};
-
-	
-	$.ajax({
-		type:"POST",
-		url:"./login",
-		dataType:"JSON",
-		data:json,
-		success:function(data){
-			console.log("success");
-			goMainPage(data);
-			
-		},
-		
-		error:function(data){
-			console.log("failed");
-		}
-		
+layui.use('form', function(){
+	var form = layui.form;
+	//自定义验证规则
+	form.verify({
+	  phone: [
+		    /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/
+		    ,'请填写正确的手机号码'
+		  ]
+	  ,pwd: [
+	    /^[\S]{6,12}$/
+	    ,'密码不完整'
+	  ]
 	});
+	
+	 //监听提交
+	  form.on('submit(loginForm)', function(data){
+	    var json = (data.field);
+	    console.log("json="+json);
+	    /*var phone = $("#phone").val();
+		var pwd = $("#pwd").val();
+		json = {
+				"phone":phone,
+				"pwd":pwd
+		};*/
+
+		
+		$.ajax({
+			type:"POST",
+			url:"./login",
+			dataType:"JSON",
+			data:json,
+			success:function(data){
+				console.log("success");
+				goMainPage(data);
+				
+			},
+			
+			error:function(data){
+				layer.msg("账号密码错误");
+			}
+			
+		});
+	    
+	  });
+	
+});
+
+/*$("#loginBtn").click(function(){
+	
+	
 		
 	
-});	
+});	*/
 
 //注册
 $("#registerBtn").click(function(){
