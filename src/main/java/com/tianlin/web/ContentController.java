@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tianlin.entity.Content;
 import com.tianlin.service.ContentService;
 
@@ -46,7 +47,7 @@ public class ContentController {
 		//校验数据
 		if( userId == null || userId == "" || title == null || title == "" || detail == null || detail == "" ){
 			response.setStatus(401);
-			response.setCharacterEncoding("UTF-8");
+			response.setHeader("Content-Type", "text/html;charset=utf-8");
 			response.setHeader("errorCode", "1");
 			response.setHeader("errorMsg", "数据为空");
 			return ;
@@ -85,17 +86,11 @@ public class ContentController {
 		if(userId == null){ //没有用户信息
 			return ;//拒绝
 		}
-		else if(pageNow == null ){
-			pageNow = "0";
-		}
-		else if(pageSize == null){
-			pageSize = "1";
-		}
 		
 		Content content = new Content();
 		
 		try {
-			DateFormat dFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+			DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if(wdate != null){
 				Date wDateF = dFormat.parse(wdate);
 				content.setWdate(wDateF);
@@ -107,19 +102,27 @@ public class ContentController {
 			
 			content.setUserid(Integer.parseInt(userId));
 			content.setTitle(title);
-			content.setPageNow(Integer.parseInt(pageNow)*Integer.parseInt(pageSize));
-			content.setPageSize(Integer.parseInt(pageSize));
+			if(pageNow != null && pageSize != null ){
+				content.setPageNow(Integer.parseInt(pageNow)*Integer.parseInt(pageSize));
+				content.setPageSize(Integer.parseInt(pageSize));
+			}
+			if(pageNow == null && pageSize != null){
+				content.setPageNow( 0 );
+				content.setPageSize(Integer.parseInt(pageSize));
+			}
 			
 		} catch (Exception e) {
-			logger.error("组装数据失败："+e.getMessage());
+			logger.error("组装数据失败："+e);
 			return ;
 		}
-		
+		logger.info("查询条件:"+JSON.toJSONString(content));
 		List<Content> list = cService.queryMore(content);
 		if( list != null && list.size() > 0 ){
-			String json = JSON.toJSONString(list);
-			response.setCharacterEncoding("utf-8");
+			logger.info("wdate="+list.get(0).getWdate());
+			String json = JSON.toJSONString(list , SerializerFeature.WriteDateUseDateFormat);
+			response.setHeader("Content-Type", "text/html;charset=utf-8");
 			response.getWriter().print(json);
+			logger.info("发送数据："+json);
 		}
 		
 	}
@@ -130,6 +133,29 @@ public class ContentController {
 	@RequestMapping("/updateData")
 	public void UpdateData(HttpServletRequest request , HttpServletResponse response){
 		logger.info("hello, I want update data");
+		//接收参数
+		String userId = request.getParameter("userId");
+		String id = request.getParameter("id");
+		String title = request.getParameter("title");
+		String detail = request.getParameter("detail");
+		
+		if(userId == null || userId == "" || id == null || id == "" ){
+			return ; 
+		}
+		//修改数据
+		try {
+			Content content = new Content();
+			content.setId(Long.parseLong(id));
+			content.setUserid(Integer.parseInt(userId));
+			content.setTitle(title);
+			content.setDetail(detail);
+			content.setWdate(new Date());
+			
+			cService.updateByPrimaryKeySelective(content);
+			logger.info("已经修改完成："+JSON.toJSONString(content));
+		} catch (Exception e) {
+			logger.error("修改数据失败："+e);
+		}
 		
 	}
 	
@@ -139,7 +165,17 @@ public class ContentController {
 	@RequestMapping("/deleteData")
 	public void DeleteData(HttpServletRequest request , HttpServletResponse response){
 		logger.info("hello, I want delete data");
+		String userId = request.getParameter("userId");
+		String id = request.getParameter("id");
 		
+		if(userId == null || userId == "" || id == null || id == "" ){
+			return ; 
+		}
+		//删除数据--做真删除
+		Long Id = Long.parseLong(id);
+		cService.deleteByPrimaryKey(Id);
+		logger.info("删除数据成功：用户id "+userId+"  数据记录 "+id);
+		return ;
 	}
 
 }

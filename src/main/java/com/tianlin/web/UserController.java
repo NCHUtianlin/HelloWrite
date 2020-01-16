@@ -63,6 +63,7 @@ public class UserController {
 		
 		user.setName(name);
 		user.setPwd(pwd);
+		user.setState(0);
 		//存储数据
 		userService.insert(user);
 		System.out.println("用户注册成功");

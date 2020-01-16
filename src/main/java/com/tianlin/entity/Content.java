@@ -3,6 +3,10 @@ package com.tianlin.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Entity;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /***
  * 内容
  * @entity
@@ -18,9 +22,9 @@ public class Content implements Serializable {
 	private Long id;
 
     private Integer userid;
-
+    @JsonFormat(pattern="yy-MM-dd Hh:mm:ss")
     private Date wdate;
-    
+    @JsonFormat(pattern="yy-MM-dd Hh:mm:ss")
     private Date wdateOlder;
 
 	private String detail;
@@ -77,8 +81,8 @@ public class Content implements Serializable {
         return wdate;
     }
 
-    public void setWdate(Date wdate) {
-        this.wdate = wdate;
+    public void setWdate(Date wdate){
+    	this.wdate = wdate;
     }
 
     public String getDetail() {

@@ -25,7 +25,7 @@ public class ContentService {
     	return cMapper.queryMore(content);
     }
 	
-	public int deleteByPrimaryKey(Integer id){
+	public int deleteByPrimaryKey(Long id){
 		
 		return cMapper.deleteByPrimaryKey(id);
 	}
@@ -38,7 +38,7 @@ public class ContentService {
 		return cMapper.insertSelective(record);
 	}
 
-	public Content selectByPrimaryKey(Integer id){
+	public Content selectByPrimaryKey(Long id){
 		return cMapper.selectByPrimaryKey(id);
 	}
 

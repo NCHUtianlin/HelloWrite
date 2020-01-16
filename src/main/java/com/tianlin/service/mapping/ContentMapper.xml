@@ -22,8 +22,11 @@
       <if test="userid != null" >
        and userId = #{userid,jdbcType=INTEGER}
       </if>
-      <if test="wdate != null" >
-       and wdate = #{wdate,jdbcType=TIMESTAMP}
+      <if test="wdate != null and wdateOlder == null" >
+       and date_format(wdate , '%Y-%m-%d') = date_format( #{wdate,jdbcType=TIMESTAMP} , '%Y-%m-%d')
+      </if>
+      <if test="wdate != null and wdateOlder != null" >
+       and wdate between {wdateOlder,jdbcType=TIMESTAMP} and {wdate,jdbcType=TIMESTAMP}
       </if>
       <if test="detail != null" >
        and detail = #{detail,jdbcType=VARCHAR}
@@ -34,8 +37,11 @@
       <if test="state != null" >
        and state = #{state,jdbcType=INTEGER}
       </if>
-      order by Id ASC
-    limit #{pageNow,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+      order by wdate DESC
+      <if test="pageNow != null and pageSize != null ">
+      limit #{pageNow,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+      </if>
+    
   </select>
   
   

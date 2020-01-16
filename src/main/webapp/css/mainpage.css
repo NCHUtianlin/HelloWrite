@@ -6,7 +6,7 @@
 			background:-webkit-gradient(linear, 0% 0%, 100% 100%,from(#F00000), to(#84000d));  }
 
 .myAccount_div{ height:20px; float:right; font-size:8px; }
-.myAccount_div a:hover{ cusor:pointer; }
+.myAccount_div a:hover{ cursor:pointer; }
 
 .navbar_div{  }
 
@@ -16,7 +16,7 @@
 
 #buttonDiv{ float:right; }
 
-.showContent_div textarea{ margin-top:10px; padding:10px; }
+.showContent_div textarea{ margin-top:10px; margin-buttom:10px; padding:10px; }
 
 
 

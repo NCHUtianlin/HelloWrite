@@ -1,14 +1,14 @@
 package com.tianlin.web;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.ibatis.annotations.Param;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,17 +24,17 @@ import com.tianlin.service.UserService;
  * @date 2020.01.14
  * **/
 @Controller
-@RequestMapping("/htl")
 public class LoginController {
 	
 	@Autowired
 	private UserService userService;
 	private static Map<String, Object> CheckCodeMap;
+	private Logger logger = Logger.getLogger(LoginController.class);
 	
 	public LoginController() {
 		CheckCodeMap = new HashMap<String,Object>();
 	}
-
+	
 	/**
 	 * 处理登陆验证
 	 * @throws IOException 
@@ -48,7 +48,7 @@ public class LoginController {
 		//校验参数
 		if( phone == null || phone == "" || pwd == null || pwd == "" || !phone.matches("^\\d{11}$") ){
 			response.setStatus(403);
-			response.setCharacterEncoding("utf-8");
+			response.setHeader("Content-Type", "text/html;charset=utf-8");
 			response.setHeader("errorCode", "1");
 			response.setHeader("errorMsg", "账号密码错误");
 			return ;
@@ -73,10 +73,11 @@ public class LoginController {
 				jsonObject.put("userId", ""+p_user.getId());
 				//发送
 				response.getWriter().print(jsonObject);
+				logger.info("登陆成功，发送数据："+jsonObject.toJSONString());
 				return;
 			}else{
 				response.setStatus(403);
-				response.setCharacterEncoding("utf-8");
+				response.setHeader("Content-Type", "text/html;charset=utf-8");
 				response.setHeader("errorCode", "1");
 				response.setHeader("errorMsg", "账号密码错误");
 				return ;
@@ -101,7 +102,7 @@ public class LoginController {
 	 * **/
 	@RequestMapping("/main")
 	public ModelAndView mainPage(HttpServletRequest request , HttpServletResponse response){
-		System.out.println("main");
+		logger.info("进入主页面");
 		ModelAndView mView = new ModelAndView();
 		//接收校验码
 		String check = request.getParameter("checkCode");
@@ -123,21 +124,20 @@ public class LoginController {
 		return mView;
 	}
 	
-	/*public static void main(String[] agrs){
-		String checkCode = RandomStringUtils.randomAlphabetic(32);
-		System.out.println(checkCode);
-		checkCode = RandomStringUtils.randomAlphabetic(32);
-		System.out.println(checkCode);
-		checkCode = RandomStringUtils.randomAlphabetic(32);
-		System.out.println(checkCode);
-		String phone = "12345678912";
-		Long p = Long.parseLong(phone);
-		System.out.println(p);
-		Date date = new Date();
-		Timestamp time = new Timestamp(date.getTime());
-		System.out.println("time="+time);
+	/***
+	 * 退出系统
+	 * @throws IOException 
+	 * **/
+	@RequestMapping("/signOut")
+	public void signOut(HttpServletRequest request , HttpServletResponse response) throws IOException{
 		
-	}*/
+		String userId = request.getParameter("userId");
+		CheckCodeMap.remove(userId);
+		logger.info("退出系统"+userId);
+		
+		response.sendRedirect("./");
+		
+	}
 	
 	
 

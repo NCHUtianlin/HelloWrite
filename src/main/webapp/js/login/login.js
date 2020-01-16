@@ -13,7 +13,7 @@ $("#loginBtn").click(function(){
 	
 	$.ajax({
 		type:"POST",
-		url:"./htl/login",
+		url:"./login",
 		dataType:"JSON",
 		data:json,
 		success:function(data){
@@ -34,7 +34,7 @@ $("#loginBtn").click(function(){
 //注册
 $("#registerBtn").click(function(){
 	console.log("打开注册页面");
-	window.location.href="./htl/goRegister";
+	window.location.href="./goRegister";
 });
 
 //进入主页面
@@ -46,7 +46,7 @@ function goMainPage(data){
 	
 	/* FORM 提交  */
 	var form = document.createElement('form');
-	form.action = './htl/main';
+	form.action = './main';
 	form.method = 'POST';
 	var input = document.createElement('input');
 	input.type = 'hidden';
