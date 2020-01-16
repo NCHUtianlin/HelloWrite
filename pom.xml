@@ -15,7 +15,7 @@
 		<druid.version>1.0.16</druid.version>
 		<junit.version>4.12</junit.version>
 		<!-- spring版本号 -->
-		<spring.version>4.2.3.RELEASE</spring.version>
+		<spring.version>5.2.3.RELEASE</spring.version>
 		<!-- mybatis版本号 -->
 		<mybatis.version>3.3.0</mybatis.version>
 		<mybatis-spring.version>1.2.3</mybatis-spring.version>
@@ -322,7 +322,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>4.2.4.RELEASE</version>
+			<version>5.2.3.RELEASE</version>
 		</dependency>
 
 		<!-- websocket -->
